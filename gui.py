@@ -16,10 +16,17 @@ class GUI:
 
         # frames
         self.input_frame = None
+        self.select_frame = None
         self.status_frame = None
 
         # buttons
         self.download_button = None
+
+        # dropdown
+        self.format_options = ["mp3", "mp4"]
+        self.format = None
+        self.quality_options = None
+        self.quality = None
 
         # status field
         self.status_field = None
@@ -48,6 +55,9 @@ class GUI:
         self.input_frame = ttk.Frame(self.root)
         self.input_frame.pack(padx=10, pady=(10, 0), side="top", fill="x")
 
+        self.input_frame = ttk.Frame(self.root)
+        self.input_frame.pack(padx=10, pady=(10, 0), side="bottom", fill="x")
+
         self.status_frame = ttk.Frame(self.root)
         self.status_frame.pack(side="top", fill="x", pady=0, ipady=0)
 
@@ -60,6 +70,9 @@ class GUI:
         # download button
         download_button = ttk.Button(self.input_frame, text='Download', command=self.download, state='enabled')
         download_button.pack(side="right", padx=5, pady=0) #, pady=3
+
+        # quality dropdown
+        
 
         self.root.config(menu=menu_bar)
         sv_ttk.set_theme("dark")
@@ -107,12 +120,12 @@ class GUI:
     def marquee(self, widget, text, delay=100):
         def shift():
             nonlocal text
-            if widget.winfo_exists():
-                text = text[1:] + text[0]
-                widget.config(text=text)
-                self.marquee_tracker = widget.after(delay, shift)
-            else:
+            if self.is_destroyed or not widget.winfo_exists():
                 self.marquee_tracker = None
+                return
+            text = text[1:] + text[0]
+            widget.config(text=text)
+            self.marquee_tracker = widget.after(delay, shift)
 
         if self.marquee_tracker:
             widget.after_cancel(self.marquee_tracker)
@@ -135,4 +148,5 @@ class GUI:
         if hasattr(self.prog, 'is_downloading'):
             self.prog.is_downloading = False
 
+        self.root.quit()
         self.root.destroy()

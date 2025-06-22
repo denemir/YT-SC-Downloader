@@ -59,7 +59,7 @@ class App:
         except queue.Empty:
             pass
 
-        if self.is_downloading or not self.status_queue.empty():
+        if not self.gui.is_destroyed and (self.is_downloading or not self.status_queue.empty()):
             self.gui.root.after(1, self._check_status_queue)
 
     def download_from_youtube(self, url, format='mp3', quality='bestaudio/best'):
